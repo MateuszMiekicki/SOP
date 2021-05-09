@@ -7,18 +7,23 @@ struct arena
     T *ptr = nullptr;
     arena()
     {
-        ptr = static_cast<T *>(malloc(100000000));
+        ptr = static_cast<T *>(malloc((1'000'000'000 / sizeof(T)) * sizeof(T)));
     }
     arena(const std::size_t size)
     {
-        ptr = malloc(size);
+        ptr = static_cast<T *> malloc((size / sizeof(T)) * sizeof(T));
     }
     std::size_t currnet = 0;
-    void *allocate(const std::size_t n)
+    T *allocate(const std::size_t n)
     {
         currnet += n;
         return ptr + currnet - n;
     }
+
+    void deallocate(const std::size_t n)
+    {
+    }
+
     ~arena()
     {
         free(ptr);
@@ -28,7 +33,7 @@ int main()
 {
     {
         arena<int> a;
-        int *n = static_cast<int *>(a.allocate(10));
+        int *n = a.allocate(10);
         for (int i = 0; i < 10; ++i)
         {
             *(n + i) = i;
@@ -37,7 +42,9 @@ int main()
         {
             std::cout << *(n + i) << '\n';
         }
+        
     }
+
     {
         uint32_t ptr = 0x12345678;
 
