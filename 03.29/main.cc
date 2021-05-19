@@ -1,4 +1,4 @@
-#include <cstdlib>
+ #include <cstdlib>
 #include <iostream>
 
 template <typename T>
@@ -42,7 +42,7 @@ int main()
         {
             std::cout << *(n + i) << '\n';
         }
-        
+
     }
 
     {
