@@ -19,6 +19,7 @@ namespace
         ERROR = -1,
         CHILD_PROCESS = 0
     };
+
     class ArgsParser
     {
     private:
@@ -73,18 +74,50 @@ namespace
             execvp(programName_.data(), const_cast<char **>(arguments_.data()));
         }
     };
+
     namespace signalHandler
     {
-        void parent(int sig)
+        void parent([[maybe_unused]] int sig)
         {
             std::cerr << "Detected SIGINT.\n";
         }
 
-        void child(int sig)
+        void child([[maybe_unused]] int sig)
         {
             std::cerr << "Caught signal in CHILD.\n";
         }
 
+        struct Singal
+        {
+            inline static pid_t pid;
+
+            static void catchSignal(int signo)
+            {
+                switch (signo)
+                {
+                case SIGTERM:
+                {
+                    kill(pid, SIGTERM);
+                }
+                break;
+                case SIGQUIT:
+                {
+                    kill(pid, SIGQUIT);
+                }
+                break;
+                case SIGHUP:
+                {
+                    kill(pid, SIGHUP);
+                }
+                break;
+                default:
+                {
+                    std::cerr << "can't catch signal\n";
+                }
+                break;
+                }
+            }
+        };
     }
 }
 
@@ -117,6 +150,10 @@ int main(int argc, char **argv)
     default:
     {
         signal(SIGINT, &signalHandler::parent);
+        signalHandler::Singal::pid = pid;
+        signal(SIGTERM, &signalHandler::Singal::catchSignal);
+        signal(SIGQUIT, &signalHandler::Singal::catchSignal);
+        signal(SIGHUP, &signalHandler::Singal::catchSignal);
         if (int state; waitpid(pid, &state, 0) > 0)
         {
             if (WIFEXITED(state) && !WEXITSTATUS(state))
