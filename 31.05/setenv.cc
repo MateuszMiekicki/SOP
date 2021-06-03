@@ -11,21 +11,15 @@ namespace
     class ArgsParser
     {
     private:
-        std::string programName_;
         std::vector<std::string> arguments_;
 
     public:
-        ArgsParser(int argc, char **argv) : programName_{argv[0]},
-                                            arguments_(argv + 1, argv + argc)
+        ArgsParser(int argc, char **argv) : arguments_(argv + 1, argv + argc)
         {
         }
         operator bool() const
         {
             return arguments_.size();
-        }
-        auto getProgramName() const
-        {
-            return programName_;
         }
         auto getArguments() const
         {
