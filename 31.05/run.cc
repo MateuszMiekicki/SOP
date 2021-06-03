@@ -1,8 +1,8 @@
 #include <algorithm>
-#include <iostream>
 #include <csignal>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <string>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -49,7 +49,7 @@ namespace
         std::vector<char *> arguments_;
         void convert_(std::vector<std::string> args)
         {
-            arguments_.reserve(1 + args.size() + 1);
+            arguments_.reserve(args.size() + 1);
             std::transform(args.begin(), args.end(),
                            std::back_inserter(arguments_),
                            [](std::string &s)
@@ -149,19 +149,19 @@ int main(int argc, char **argv)
     case CHILD_PROCESS:
     {
         auto exec = Exec(args.getArguments().at(0), args.getArguments());
-        signal(SIGINT, &signalHandler::child);
-        signal(SIGINT, SIG_IGN);
+        std::signal(SIGINT, &signalHandler::child);
+        std::signal(SIGINT, SIG_IGN);
         exec.exec();
         return 0;
     }
     break;
     default:
     {
-        signal(SIGINT, &signalHandler::parent);
-        signalHandler::Signal sig(pid);
-        signal(SIGTERM, sig);
-        signal(SIGQUIT, sig);
-        signal(SIGHUP, sig);
+        std::signal(SIGINT, &signalHandler::parent);
+        auto sig = signalHandler::Signal(pid);
+        std::signal(SIGTERM, sig);
+        std::signal(SIGQUIT, sig);
+        std::signal(SIGHUP, sig);
         if (int state; waitpid(pid, &state, 0) > 0)
         {
             if (WIFEXITED(state) && !WEXITSTATUS(state))
