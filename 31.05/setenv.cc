@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string>
 #include <unistd.h>
+#include <utility>
 #include <vector>
 
 namespace
@@ -34,7 +35,6 @@ namespace
 
 int main(int argc, char **argv)
 {
-
     auto args = ArgsParser(argc, argv);
     if (!args)
     {
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
         std::cerr << "Not found SHELL env. var.\n";
         return -1;
     }
-    if ('-' != args.getArguments().at(0).at(0))
+    if ('-' != args.at(0).front())
     {
         if (setenv(args.at(0).c_str(),
                    args.at(1).c_str(),
@@ -61,9 +61,9 @@ int main(int argc, char **argv)
     }
     else
     {
-        auto pathToDelete = args.at(0);
-        std::cout << std::string(pathToDelete.begin() + 1, pathToDelete.end()).c_str();
-        unsetenv(std::string(pathToDelete.begin() + 1, pathToDelete.end()).c_str());
+        auto [begin, end] = std::make_pair(args.at(0).begin() + 1,
+                                           args.at(0).end());
+        unsetenv(std::string(begin, end).c_str());
         execl(shell, shell, nullptr);
         std::cerr << "Error starting shell\n";
         return -2;
