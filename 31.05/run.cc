@@ -87,27 +87,27 @@ namespace
             std::cerr << "Caught signal in CHILD.\n";
         }
 
-        struct Singal
+        class Signal
         {
-            inline static pid_t pid;
-
-            static void catchSignal(int signo)
+            using funcptr = void (*)(int);
+            inline static pid_t pid_;
+            static void catchSignal_(int signo)
             {
                 switch (signo)
                 {
                 case SIGTERM:
                 {
-                    kill(pid, SIGTERM);
+                    kill(pid_, SIGTERM);
                 }
                 break;
                 case SIGQUIT:
                 {
-                    kill(pid, SIGQUIT);
+                    kill(pid_, SIGQUIT);
                 }
                 break;
                 case SIGHUP:
                 {
-                    kill(pid, SIGHUP);
+                    kill(pid_, SIGHUP);
                 }
                 break;
                 default:
@@ -117,7 +117,18 @@ namespace
                 break;
                 }
             }
+
+        public:
+            Signal(const pid_t pid)
+            {
+                Signal::pid_ = pid;
+            }
+            operator funcptr() const
+            {
+                return reinterpret_cast<funcptr>(&Signal::catchSignal_);
+            }
         };
+
     }
 }
 
@@ -150,10 +161,10 @@ int main(int argc, char **argv)
     default:
     {
         signal(SIGINT, &signalHandler::parent);
-        signalHandler::Singal::pid = pid;
-        signal(SIGTERM, &signalHandler::Singal::catchSignal);
-        signal(SIGQUIT, &signalHandler::Singal::catchSignal);
-        signal(SIGHUP, &signalHandler::Singal::catchSignal);
+        signalHandler::Signal sig(pid);
+        signal(SIGTERM, sig);
+        signal(SIGQUIT, sig);
+        signal(SIGHUP, sig);
         if (int state; waitpid(pid, &state, 0) > 0)
         {
             if (WIFEXITED(state) && !WEXITSTATUS(state))
