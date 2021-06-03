@@ -77,7 +77,7 @@ namespace
     {
         void parent(int sig)
         {
-            std::cerr << "They got back together!\n";
+            std::cerr << "Detected SIGINT.\n";
         }
 
         void child(int sig)
@@ -109,6 +109,7 @@ int main(int argc, char **argv)
     {
         auto exec = Exec(args.getArguments().at(0), args.getArguments());
         signal(SIGINT, &signalHandler::child);
+        signal(SIGINT, SIG_IGN);
         exec.exec();
         return 0;
     }
