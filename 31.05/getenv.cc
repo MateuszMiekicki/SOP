@@ -28,14 +28,13 @@ namespace
 
 int main(int argc, char **argv)
 {
-
     if (auto args = ArgsParser(argc, argv); args)
     {
-        auto pathChosenByUser = std::getenv(args.getArguments().at(0).c_str());
-        if (!pathChosenByUser)
+        if (auto pathChosenByUser = std::getenv(args.getArguments().at(0).c_str());
+            pathChosenByUser)
         {
-            std::cerr << "this path does not exist\n";
+            std::cout << pathChosenByUser;
         }
-        std::cout << pathChosenByUser;
+        std::cerr << "this path does not exist\n";
     }
 }
