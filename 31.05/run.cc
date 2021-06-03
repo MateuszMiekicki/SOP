@@ -5,8 +5,9 @@
 #include <vector>
 
 #include <errno.h>
-#include <stdio.h>
+#include <signal.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -72,10 +73,24 @@ namespace
             execvp(programName_.data(), const_cast<char **>(arguments_.data()));
         }
     };
+    namespace signalHandler
+    {
+        void parent(int sig)
+        {
+            std::cerr << "They got back together!\n";
+        }
+
+        void child(int sig)
+        {
+            std::cerr << "Caught signal in CHILD.\n";
+        }
+
+    }
 }
 
 int main(int argc, char **argv)
 {
+
     auto args = ArgsParser(argc, argv);
     if (!args)
     {
@@ -93,16 +108,26 @@ int main(int argc, char **argv)
     case CHILD_PROCESS:
     {
         auto exec = Exec(args.getArguments().at(0), args.getArguments());
+        signal(SIGINT, &signalHandler::child);
         exec.exec();
+        return 0;
     }
     break;
     default:
     {
+        signal(SIGINT, &signalHandler::parent);
         if (int state; waitpid(pid, &state, 0) > 0)
         {
             if (WIFEXITED(state) && !WEXITSTATUS(state))
             {
                 std::cout << "program is executed successfully\n";
+                return 0;
+            }
+            else if (WIFSIGNALED(state))
+            {
+                std::cerr << "the child process terminated from receiving a "
+                             "signal that wasn't caught\n";
+                return -1;
             }
             else if (WIFEXITED(state) && WEXITSTATUS(state))
             {
