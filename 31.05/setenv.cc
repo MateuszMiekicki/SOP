@@ -54,7 +54,7 @@ int main(int argc, char **argv)
             std::cerr << "Error setting env. var.\n";
             return -1;
         }
-        execl(shell, shell, NULL);
+        execl(shell, shell, nullptr);
         std::cerr << "Error starting shell\n";
         return -2;
     }
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
         auto pathToDelete = args.getArguments().at(0);
         std::cout << std::string(pathToDelete.begin() + 1, pathToDelete.end()).c_str();
         unsetenv(std::string(pathToDelete.begin() + 1, pathToDelete.end()).c_str());
-        execl(shell, shell, NULL);
+        execl(shell, shell, nullptr);
         std::cerr << "Error starting shell\n";
         return -2;
     }
