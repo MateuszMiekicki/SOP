@@ -31,6 +31,10 @@ namespace
         {
             return arguments_;
         }
+        auto at(const std::size_t index) const
+        {
+            return arguments_.at(index);
+        }
     };
 }
 
@@ -50,8 +54,8 @@ int main(int argc, char **argv)
     }
     if ('-' != args.getArguments().at(0).at(0))
     {
-        if (setenv(args.getArguments().at(0).c_str(),
-                   args.getArguments().at(1).c_str(),
+        if (setenv(args.at(0).c_str(),
+                   args.at(1).c_str(),
                    1))
         {
             std::cerr << "Error setting env. var.\n";
@@ -63,7 +67,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        auto pathToDelete = args.getArguments().at(0);
+        auto pathToDelete = args.at(0);
         std::cout << std::string(pathToDelete.begin() + 1, pathToDelete.end()).c_str();
         unsetenv(std::string(pathToDelete.begin() + 1, pathToDelete.end()).c_str());
         execl(shell, shell, nullptr);
