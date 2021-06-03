@@ -23,6 +23,10 @@ namespace
         {
             return arguments_;
         }
+        auto at(const std::size_t index) const 
+        {
+            return arguments_.at(index);
+        }
     };
 }
 
@@ -30,7 +34,7 @@ int main(int argc, char **argv)
 {
     if (auto args = ArgsParser(argc, argv); args)
     {
-        if (auto pathChosenByUser = std::getenv(args.getArguments().at(0).c_str());
+        if (auto pathChosenByUser = std::getenv(args.at(0).c_str());
             pathChosenByUser)
         {
             std::cout << pathChosenByUser;
