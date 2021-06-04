@@ -39,6 +39,9 @@ int main(int argc, char **argv)
         {
             std::cout << pathChosenByUser;
         }
-        std::cerr << "this path does not exist\n";
+        else
+        {
+            std::cerr << "this path does not exist\n";
+        }
     }
 }
