@@ -1,0 +1,174 @@
+0.  cat(1). Napisz program drukujący pliki na standandardowy strumień
+    wyjścia.
+
+# 03. Processes
+
+1. Niepoprawny wskaźnik. Odczytać dane spod adresu 0xdeadbeef.
+
+2.  Napisać program, który wywoła fork(2) i:
+    - zaraportuje PID procesu potomnego (z rodzica)
+    - zaraportuje PID procesu nadrzędnego (z dziecka)
+
+3.  Napisać program, który wywoła execve i będzie służył do
+    uruchamiania innych programów.
+
+4.  Napisać program, który wywoła fork(2) i uruchomi sleep(1) na 10s.
+    Następnie niech czeka na nadejście SIGCHLD wywołując waitpid(2) z
+    PID procesu potomnego.
+
+5.  Napisać program, który stworzy cztery procesy potomne. Niech każdy
+    z nich śpi losową ilość sekund i zakończy pracę z wynikiem 1 albo
+    0 (wybieranym losowo). Niech program nadrzędny oczekuje na ich
+    zakończenie i restartuje te, które zakończyły się "awarią".
+
+6.  Napisać program, który obsłuży za pomocą sigaction(2) obsłuży:
+    - SIGALRM
+    - SIGHUP
+    - SIGINT
+    - SIGPIPE
+    - SIGQUIT
+    - SIGTERM
+    - SIGUSR1
+    - SIGUSR2
+    Obsługa ma polegać na wydrukowaniu "process PID xxx got signal
+    xxx" używając getpid(2) i strsignal(3).
+
+7.  Napisać program, który ubsłuży sygnał SIGUSR1 za pomocą
+    sigaction(2) i wydrukuje integer, który został przysłany z
+    sygnałem.
+
+8.  Napisać program, który będzie pozwalał na wywołanie kill(2) z
+    konsoli.
+
+9.  Napisać program, który będzie pozwalał na wywołanie sigqueue(2) z
+    konsoli.
+
+# 04. Memory
+
+10. Zaimplementować dekodowanie adresów wirtualnych w schemacie Sv32
+    używanym przez 32-bitową architekturę RISC-V.
+
+11. Zaalokować i zwolnić 4 KiB pamięci za pomocą wywołań mmap(2) i
+    munmap(2). Niech pamięć będzie zaalokowana jako prywatny i
+    anonimowy blok.
+
+# 09. Modele I/O
+
+12. Uproszczona wersja programu ncat(1). Napisać program, który
+    otworzy socket w trybie nasłuchiwania, odbierze połączenia,
+    odczyta dane, wydrukuje je na standardowe wyjście, oraz zamknie
+    połączenie.
+    Kod w pliku: ncat-base.cpp
+
+13. Program ncat(1) w modelu synchronicznym blokującym. Rozwinąć
+    program z zadania 12 o możliwość odczytywania danych od kilku
+    klientów naraz. Użyć modelu synchronicznego blokującego.
+    Czemu nie można tego zrobić w sensowny sposób nie używając wątków?
+    Kod w pliku: ncat-blocking.cpp
+
+14. Program ncat(1) w modelu synchronicznym nieblokującym. Rozwinąć
+    program z zadania 12 o możliwość odczytywania danych od kilku
+    klientów naraz. Użyć modelu synchronicznego nieblokującego.
+    Kod w pliku: ncat-nonblocking.cpp
+
+15. Program ncat(1) w modelu asynchronicznym. Rozwinąć program z
+    zadania 12 o możliwość odczytywania danych od kilku klientów naraz.
+    Użyć modelu asynchronicznego.
+    Kod w pliku: ncat-async.cpp
+
+# 11. User interfaces (shell)
+
+16. fork(2) i execvp(3). Napisz program, który będzie w stanie
+    uruchamiać inne programy za pomocą wywołań fork(2) i execvp(3):
+        ]$ ./run ls -1
+        foo
+        bar
+        baz
+    Kod w pliku: run.cpp
+
+17. waitpid(2). Rozwiń program z poprzedniego zadania o sprawdzanie
+    wyniku działania wykonanego procesu wywołaniem waitpid(2). Obsłuż
+    przypadki, w których program:
+    - zakończył działanie w normalny sposób
+    - zakończył działanie w wyniku otrzymania sygnału
+
+18. signal(2). Rozwiń program z poprzedniego zadania zabezpieczając go
+    przez sygnałem SIGINT za pomocą wywołania signal(2). Niech
+    program ignoruje sygnał SIGINT.
+
+19. sigqueue(2). Rozwiń program z poprzedniego zadania. Kiedy proces
+    wykonujący program z run.cpp otrzyma jeden z sygnałów:
+    SIGTERM, SIGQUIT, i SIGHUP niech obsłuży go o przekaże do swojego
+    procesu potomnego.
+
+20. getenv(3). Napisz program, który będzie drukował zawartość
+    podanej mu zmiennej środowiskowej:
+        ]$ ./getenv USER
+        student
+    Pamiętaj o obsłużeniu sytuacji, w której żądana zmienna
+    środowiskowa nie istnieje.
+    Kod w pliku: getenv.cpp
+
+21. setenv(3). Napisz program, który będzie ustawiał wartość zmiennej
+    środowiskowej, po czym podmieniał swój obraz na shell wskazany w
+    zmiennej środowiskowej SHELL:
+        (old shell) ]$ echo $FOO
+
+        (old shell) ]$ ./setenv FOO bar
+        (new shell) ]$ echo $FOO
+        bar
+        (new shell) ]$
+    Plik: setenv.cpp
+
+22. unsetenv(3). Rozwiń program z poprzedniego zadania tak żeby po
+    podaniu -ZMIENNA usuwał zmienną ze środowiska zamiast ustawiać ją:
+        (old shell) ]$ echo $FOO
+        bar
+        (old shell) ]$ ./setenv -FOO
+        (new shell) ]$ echo $FOO
+
+        (new shell) ]$
+    Kod w pliku: setenv.cpp
+
+23. SIGHUP. Napisz program, który będzie w nieskończonej pętli co sekundę
+    drukować pewien napis. Niech ten napis będzie odczytany z pliku podczas
+    inicjalizacji programu.
+
+    Obsłuż sygnały SIGINT i SIGTERM. Niech reakcją na nie będzie zamknięcie
+    programu.
+
+    Obsłuż sygnał SIGHUP. Niech reakcją na niego będzie ponowne wczytanie danych
+    do drukowania z pliku.
+    Kod w pliku: print-loop.cpp
+
+24. ping-pong. Napisz program (P0), który uruchomi dwa procesy potomne. Pierwszy
+    z nich (P1) niech otrzyma jako argument PID procesu rodzica. Drugi z nich
+    (P2) niech otrzyma jako argument PID procesu P1.
+
+    Niech wszystkie oczekują na otrzymanie sygnału SIGUSR1, ale:
+
+    - niech proces P2 po jego otrzymaniu drukuje "ping!", wyśle go do procesu P1, i
+      zakończy działanie
+    - niech proces P1 po jego otrzymaniu drukuje "pong!", wyśle go do procesu P0, i
+      zakończy działanie
+    - niech proces P0 po jego otrzymaniu drukuje "bang!" i zakończy działanie
+
+    Wyślij do procesu P2 sygnal SIGUSR1.
+
+    Sugestia: wykorzystaj sigwaitinfo(2).
+
+    Kod w plikach: bang.cpp, ping.cpp, pong.cpp
+
+25. pipe. Napisz program, który uruchomi dwa procesy potomne połączone potokiem.
+    Niech standardowe wyjście pierwszego z tych procesów (producenta) będzie
+    połączone ze standardowym wejściem drugiego z nich (konsumenta). Wykorzystaj
+    wywołania systemowe pipe(2) i dup2(2).
+
+    Niech producent wyśle do konsumenta kilka linii tekstu zakończonych znakiem
+    końca linii po czym zakończy działanie. Konsument powinien odczytywać linie
+    tekstu ze standardowego wejścia i drukować je na swoje standardowe wyjscie.
+
+    Używaj std::cin i std::cout do odczytu i zapisu linii tekstu, tak jak w
+    normalnych programach.
+
+    Kod w pliku: pipe.cpp
