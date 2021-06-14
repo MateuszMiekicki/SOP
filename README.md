@@ -20,9 +20,9 @@ Operating systems - PJATK
 - [ ] task  17
 - [ ] task  18
 - [ ] task  19
-- [ ] task  20
-- [ ] task  21
-- [ ] task  22
-- [ ] task  23
+- [x] task  20 github.com/MateuszMiekicki/SOP/blob/main/31.05/getenv.cc
+- [x] task  21 github.com/MateuszMiekicki/SOP/blob/main/31.05/setenv.cc
+- [x] task  22 github.com/MateuszMiekicki/SOP/blob/main/31.05/run.cc
+- [x] task  23 github.com/MateuszMiekicki/SOP/blob/main/14.06/print-loop.cpp
 - [ ] task  24
 - [ ] task  25
