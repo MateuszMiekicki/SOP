@@ -1,6 +1,6 @@
 # SOP
 Operating systems - PJATK
-- [ ] task  0
+- [x] task  0
 # Processes
 - [ ] task  1
 - [ ] task  2
