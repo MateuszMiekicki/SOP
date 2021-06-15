@@ -12,8 +12,8 @@ Operating systems - PJATK
 - [x] task  8
 - [x] task  9
 # Memory
-- [ ] task  10
-- [ ] task  11
+- [x] task  10
+- [x] task  11
 # Modele I/O
 - [ ] task  12
 - [ ] task  13
