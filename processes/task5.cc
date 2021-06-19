@@ -19,7 +19,7 @@ int returnRandomValue()
     return randomNaturalNumber(10) % 2;
 }
 
-int main()
+void createChild()
 {
     enum
     {
@@ -27,104 +27,52 @@ int main()
         CHILD_PROCESS = 0
     };
     const unsigned MAX_SLEEP_TIME{5};
-    bool firstChildFlag = true;
-    while (firstChildFlag)
+    switch (auto child = fork(); child)
     {
-        switch (auto firstChild = fork(); firstChild)
+    case ERROR:
+    {
+        throw;
+    }
+    break;
+    case CHILD_PROCESS:
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(randomNaturalNumber(MAX_SLEEP_TIME)));
+        exit(returnRandomValue());
+        return;
+    }
+    break;
+    default:
+    {
+        return;
+    }
+    break;
+    }
+}
+
+bool checkChildStatus()
+{
+    int status;
+    pid_t cpid = waitpid(-1, &status, 0);
+    printf("Child %d: returned value is: %d\n", cpid, WEXITSTATUS(status));
+    return WEXITSTATUS(status);
+}
+
+int main()
+{
+    const auto NUMBER_OF_CHILD{4};
+    for (auto i{0}; i < NUMBER_OF_CHILD; ++i)
+    {
+        createChild();
+    }
+    auto counter{4};
+    while (counter)
+    {
+        if (checkChildStatus())
         {
-        case ERROR:
-        {
-            return -1;
+            --counter;
         }
-        break;
-        case CHILD_PROCESS:
         {
-            std::this_thread::sleep_for(std::chrono::seconds(randomNaturalNumber(MAX_SLEEP_TIME)));
-            bool secondChildFlag = true;
-            while (secondChildFlag)
-            {
-                switch (auto secondChild = fork(); secondChild)
-                {
-                case ERROR:
-                {
-                    return -1;
-                }
-                break;
-                case CHILD_PROCESS:
-                {
-                    std::this_thread::sleep_for(std::chrono::seconds(randomNaturalNumber(MAX_SLEEP_TIME)));
-                    bool thirdChildFlag = true;
-                    while (thirdChildFlag)
-                    {
-                        switch (auto thirdChild = fork(); thirdChild)
-                        {
-                        case ERROR:
-                        {
-                            return -1;
-                        }
-                        break;
-                        case CHILD_PROCESS:
-                        {
-                            std::this_thread::sleep_for(std::chrono::seconds(randomNaturalNumber(MAX_SLEEP_TIME)));
-                            bool fourthChildFlag = true;
-                            while (fourthChildFlag)
-                            {
-                                switch (auto fourthChild = fork(); fourthChild)
-                                {
-                                case ERROR:
-                                {
-                                    return -1;
-                                }
-                                break;
-                                case CHILD_PROCESS:
-                                {
-                                    std::this_thread::sleep_for(std::chrono::seconds(randomNaturalNumber(MAX_SLEEP_TIME)));
-                                    return returnRandomValue();
-                                }
-                                break;
-                                default:
-                                {
-                                    int wstatus;
-                                    waitpid(-1, &wstatus, 0);
-                                    fourthChildFlag = WEXITSTATUS(wstatus);
-                                }
-                                break;
-                                }
-                            }
-                            return returnRandomValue();
-                        }
-                        break;
-                        default:
-                        {
-                            int wstatus;
-                            waitpid(-1, &wstatus, 0);
-                            thirdChildFlag = WEXITSTATUS(wstatus);
-                        }
-                        break;
-                        }
-                    }
-                    return returnRandomValue();
-                }
-                break;
-                default:
-                {
-                    int wstatus;
-                    waitpid(-1, &wstatus, 0);
-                    secondChildFlag = WEXITSTATUS(wstatus);
-                }
-                break;
-                }
-            }
-            return returnRandomValue();
-        }
-        break;
-        default:
-        {
-            int wstatus;
-            waitpid(-1, &wstatus, 0);
-            firstChildFlag = WEXITSTATUS(wstatus);
-        }
-        break;
+            createChild();
         }
     }
 }
