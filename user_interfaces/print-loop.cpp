@@ -1,3 +1,4 @@
+#include <atomic>
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -38,7 +39,8 @@ int main(int argc, char *argv[])
     }
     std::mutex textMutex;
     std::string text = readContentFromFile(argv[1]);
-    auto changeContetn = [&]()
+    std::atomic<bool> status(true);
+    auto changeContent = [&textMutex, &signalFileDescriptor, &text, &argv, &status]()
     {
         while (true)
         {
@@ -47,11 +49,13 @@ int main(int argc, char *argv[])
             if (res < 0)
             {
                 std::cerr << "read";
+                status = false;
                 return;
             }
             if (res != sizeof(si))
             {
                 std::cerr << "Something wrong\n";
+                status = false;
                 return;
             }
 
@@ -62,15 +66,19 @@ int main(int argc, char *argv[])
             }
             else if (si.ssi_signo == SIGINT or si.ssi_signo == SIGTERM)
             {
-                exit(0);
+                status = false;
+                return;
             }
         }
     };
-    std::thread th(changeContetn);
+    std::thread th(changeContent);
     th.detach();
-    while (true)
+    while (status)
     {
-        std::cout << text << std::endl;
+        {
+            std::lock_guard<std::mutex> lock(textMutex);
+            std::cout << text << std::endl;
+        }
         using namespace std::literals::chrono_literals;
         std::this_thread::sleep_for(1s);
     }
