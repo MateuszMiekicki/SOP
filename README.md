@@ -18,7 +18,7 @@ Operating systems - PJATK
 - [x] task  12
 - [ ] task  13
 - [ ] task  14
-- [ ] task  15
+- [X] task  15
 # User interfaces (shell)
 - [x] task  16
 - [x] task  17
