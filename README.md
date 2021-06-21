@@ -1,28 +1,32 @@
 # SOP
 Operating systems - PJATK
-- [ ] task  0
-- [ ] task  1
-- [ ] task  2
-- [ ] task  3
+- [x] task  0
+# Processes
+- [x] task  1
+- [x] task  2
+- [x] task  3
 - [ ] task  4
-- [ ] task  5
-- [ ] task  6
-- [ ] task  7
-- [ ] task  8
-- [ ] task  9
-- [ ] task  10
-- [ ] task  11
-- [ ] task  12
+- [x] task  5
+- [x] task  6
+- [x] task  7
+- [x] task  8
+- [x] task  9
+# Memory
+- [x] task  10
+- [x] task  11
+# Modele I/O
+- [x] task  12
 - [ ] task  13
 - [ ] task  14
-- [ ] task  15
-- [ ] task  16
-- [ ] task  17
-- [ ] task  18
-- [ ] task  19
-- [x] task  20 github.com/MateuszMiekicki/SOP/blob/main/31.05/getenv.cc
-- [x] task  21 github.com/MateuszMiekicki/SOP/blob/main/31.05/setenv.cc
-- [x] task  22 github.com/MateuszMiekicki/SOP/blob/main/31.05/run.cc
-- [x] task  23 github.com/MateuszMiekicki/SOP/blob/main/14.06/print-loop.cpp
+- [X] task  15
+# User interfaces (shell)
+- [x] task  16
+- [x] task  17
+- [x] task  18
+- [x] task  19
+- [x] task  20
+- [x] task  21
+- [x] task  22
+- [x] task  23
 - [ ] task  24
 - [ ] task  25

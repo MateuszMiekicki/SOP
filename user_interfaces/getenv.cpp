@@ -23,7 +23,7 @@ namespace
         {
             return arguments_;
         }
-        auto at(const std::size_t index) const 
+        auto at(const std::size_t index) const
         {
             return arguments_.at(index);
         }
